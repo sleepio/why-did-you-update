@@ -78,7 +78,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function diffState(prev, next, displayName) {
 	  if (prev && next) {
-	    return (0, _deepDiff.deepDiff)(pre, next, displayName + '.state', []);
+	    return (0, _deepDiff.deepDiff)(prev, next, displayName + '.state', []);
 	  }
 
 	  return [];
@@ -94,7 +94,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var diffs = diffProps(prevProps, this.props, displayName).concat(diffState(prevState, this.state, displayName));
 
-	    diffs.forEach(opts.notifier);
+	    opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, diffs);
 	  };
 	}
 
@@ -1501,7 +1501,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	var FUNC_WARNING = "Value is a function. Possibly avoidable re-render?";
 	var AVOIDABLE_WARNING = "Value did not change. Avoidable re-render!";
 
-	var defaultNotifier = function defaultNotifier(_ref) {
+	var defaultNotifier = function defaultNotifier(groupByComponent, collapseComponentGroups, displayName, diffs) {
+	  if (groupByComponent && collapseComponentGroups) {
+	    console.groupCollapsed(displayName);
+	  } else if (groupByComponent) {
+	    console.group(displayName);
+	  }
+
+	  diffs.forEach(notifyDiff);
+
+	  if (groupByComponent) {
+	    console.groupEnd();
+	  }
+	};
+
+	exports.defaultNotifier = defaultNotifier;
+	var notifyDiff = function notifyDiff(_ref) {
 	  var name = _ref.name;
 	  var prev = _ref.prev;
 	  var next = _ref.next;
@@ -1519,7 +1534,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  console.log("%cafter ", "font-weight: bold", next);
 	  console.groupEnd();
 	};
-	exports.defaultNotifier = defaultNotifier;
 
 /***/ },
 /* 45 */
@@ -1571,13 +1585,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var include = _opts$include === undefined ? [DEFAULT_INCLUDE] : _opts$include;
 	  var _opts$exclude = opts.exclude;
 	  var exclude = _opts$exclude === undefined ? [DEFAULT_EXCLUDE] : _opts$exclude;
+	  var _opts$groupByComponent = opts.groupByComponent;
+	  var groupByComponent = _opts$groupByComponent === undefined ? true : _opts$groupByComponent;
+	  var _opts$collapseComponentGroups = opts.collapseComponentGroups;
+	  var collapseComponentGroups = _opts$collapseComponentGroups === undefined ? true : _opts$collapseComponentGroups;
 	  var _opts$notifier = opts.notifier;
 	  var notifier = _opts$notifier === undefined ? _defaultNotifier.defaultNotifier : _opts$notifier;
 
 	  return {
 	    notifier: notifier,
 	    include: toArray(include).map(toRegExp),
-	    exclude: toArray(exclude).map(toRegExp)
+	    exclude: toArray(exclude).map(toRegExp),
+	    groupByComponent: groupByComponent,
+	    collapseComponentGroups: collapseComponentGroups
 	  };
 	};
 	exports.normalizeOptions = normalizeOptions;
