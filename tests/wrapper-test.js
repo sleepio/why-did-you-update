@@ -54,6 +54,7 @@ describe(`whyDidYouUpdate wrapper`, () => {
     render(<Stub a={1} />, node)
 
     equal(warnStore.entries.length, 0)
+    equal(groupStore.entries.length, 0)
   })
 
   it(`can ignore certain names using a string`, () => {
@@ -63,6 +64,7 @@ describe(`whyDidYouUpdate wrapper`, () => {
     render(<Stub a={1} />, node)
 
     equal(warnStore.entries.length, 0)
+    equal(groupStore.entries.length, 0)
   })
 
   it(`can include only certain names using a regexp`, () => {
