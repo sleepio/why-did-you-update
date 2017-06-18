@@ -52,8 +52,8 @@ describe(`whyDidYouUpdate`, () => {
     render(<Stub a={1} />, node)
     render(<Stub a={1} />, node)
 
-    const group = groupStore.entries[0][0]
-    equal(group, `Stub`)
+    equal(groupStore.entries.length, 1)
+    equal(groupStore.entries[0][0], `Stub`)
 
     deepEqual(warnStore.entries, [
       ['Stub.props: Value did not change. Avoidable re-render!'],
@@ -88,6 +88,8 @@ describe(`whyDidYouUpdate`, () => {
       ['Stub.state: Value is the same (equal by reference). Avoidable re-render!']
     ])
 
+    equal(groupStore.entries.length, 1)
+    equal(groupStore.entries[0][0], `Stub`)
     equal(logStore.entries[0][0], 'Functions before:')
     equal(logStore.entries[1][0], 'Functions after:')
 
