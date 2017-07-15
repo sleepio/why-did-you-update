@@ -2,15 +2,15 @@ import {DIFF_TYPES} from './deepDiff'
 
 export const defaultNotifier = (groupByComponent, collapseComponentGroups, displayName, diffs) => {
   if (groupByComponent && collapseComponentGroups) {
-    console.groupCollapsed(displayName)
+    console.groupCollapsed && console.groupCollapsed(displayName)
   } else if (groupByComponent) {
-    console.group(displayName)
+    console.group && console.group(displayName)
   }
 
   diffs.forEach(notifyDiff)
 
   if (groupByComponent) {
-    console.groupEnd()
+    console.groupEnd && console.groupEnd()
   }
 }
 
