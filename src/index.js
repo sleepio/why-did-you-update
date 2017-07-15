@@ -26,30 +26,38 @@ function createComponentDidUpdate (opts) {
 
 export const whyDidYouUpdate = (React, opts = {}) => {
   const _componentDidUpdate = React.Component.prototype.componentDidUpdate
-  const _createClass = React.createClass
   opts = normalizeOptions(opts)
 
   React.Component.prototype.componentDidUpdate = createComponentDidUpdate(opts)
 
-  if (_createClass) {
-    React.createClass = function createClass (obj) {
-      const Mixin = {
-        componentDidUpdate: createComponentDidUpdate(opts)
-      }
+  let _createClass = null;
+  try {
+    _createClass = React.createClass;
 
-      if (obj.mixins) {
-        obj.mixins = [Mixin].concat(obj.mixins)
-      } else {
-        obj.mixins = [Mixin]
-      }
+    if (_createClass) {
+      React.createClass = function createClass (obj) {
+        const Mixin = {
+          componentDidUpdate: createComponentDidUpdate(opts)
+        }
 
-      return _createClass.call(React, obj)
+        if (obj.mixins) {
+          obj.mixins = [Mixin].concat(obj.mixins)
+        } else {
+          obj.mixins = [Mixin]
+        }
+
+        return _createClass.call(React, obj)
+      }
     }
-  }
+  } catch(e) {}
+
+
 
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = () => {
     React.Component.prototype.componentDidUpdate = _componentDidUpdate
-    React.createClass = _createClass
+    if (_createClass) {
+      React.createClass = _createClass
+    }
     delete React.__WHY_DID_YOU_UPDATE_RESTORE_FN__
   }
 
