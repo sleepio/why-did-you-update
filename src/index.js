@@ -1,19 +1,7 @@
-import {deepDiff} from './deepDiff'
+import {classifyDiff, DIFF_TYPES} from './deepDiff'
 import {getDisplayName} from './getDisplayName'
 import {normalizeOptions} from './normalizeOptions'
 import {shouldInclude} from './shouldInclude'
-
-function diffProps (prev, next, displayName) {
-  return deepDiff(prev, next, `${displayName}.props`, [])
-}
-
-function diffState (prev, next , displayName) {
-  if (prev && next) {
-    return deepDiff(pre, next, `${displayName}.state`, [])
-  }
-
-  return []
-}
 
 function createComponentDidUpdate (opts) {
   return function componentDidUpdate (prevProps, prevState) {
@@ -23,40 +11,53 @@ function createComponentDidUpdate (opts) {
       return
     }
 
-    const diffs =
-      diffProps(prevProps, this.props, displayName)
-        .concat(diffState(prevState, this.state, displayName))
+    const propsDiff = classifyDiff(prevProps, this.props, `${displayName}.props`)
+    if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
+      return
+    }
 
-    diffs.forEach(opts.notifier)
+    const stateDiff = classifyDiff(prevState, this.state, `${displayName}.state`)
+    if (stateDiff.type === DIFF_TYPES.UNAVOIDABLE) {
+      return
+    }
+    opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, [propsDiff, stateDiff])
   }
 }
 
 export const whyDidYouUpdate = (React, opts = {}) => {
   const _componentDidUpdate = React.Component.prototype.componentDidUpdate
-  const _createClass = React.createClass
   opts = normalizeOptions(opts)
 
   React.Component.prototype.componentDidUpdate = createComponentDidUpdate(opts)
 
-  if (_createClass) {
-    React.createClass = function createClass (obj) {
-      if (!obj.mixins) {
-        obj.mixins = []
+  let _createClass = null;
+  try {
+    _createClass = React.createClass;
+
+    if (_createClass) {
+      React.createClass = function createClass (obj) {
+        const Mixin = {
+          componentDidUpdate: createComponentDidUpdate(opts)
+        }
+
+        if (obj.mixins) {
+          obj.mixins = [Mixin].concat(obj.mixins)
+        } else {
+          obj.mixins = [Mixin]
+        }
+
+        return _createClass.call(React, obj)
       }
-
-      const Mixin = {
-        componentDidUpdate: createComponentDidUpdate(opts)
-      }
-
-      obj.mixins = [Mixin].concat(obj.mixins)
-
-      return _createClass.call(React, obj)
     }
-  }
+  } catch(e) {}
+
+
 
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = () => {
     React.Component.prototype.componentDidUpdate = _componentDidUpdate
-    React.createClass = _createClass
+    if (_createClass) {
+      React.createClass = _createClass
+    }
     delete React.__WHY_DID_YOU_UPDATE_RESTORE_FN__
   }
 
