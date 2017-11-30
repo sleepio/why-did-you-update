@@ -28,7 +28,7 @@
     "lodash.union": "^4.6.0"
   },
   "peerDependencies": {
-    "react": "^15.0 || 0.14.x"
+    "react": ">=15.0 || 0.14.x"
   },
   "devDependencies": {
     "lodash-webpack-plugin": "^0.8.1",
