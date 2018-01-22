@@ -9,6 +9,7 @@
     "umd"
   ],
   "scripts": {
+    "eslint": "eslint . --ext js",
     "build": "nwb build",
     "clean": "nwb clean",
     "start": "nwb serve",
@@ -31,8 +32,16 @@
     "react": ">=15.0 || 0.14.x"
   },
   "devDependencies": {
+    "eslint": "4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-prettier": "2.5.0",
+    "eslint-plugin-react": "^7.5.1",
     "lodash-webpack-plugin": "^0.8.1",
     "nwb": "0.9.x",
+    "prettier": "1.10.2",
     "react": "0.14.x",
     "react-dom": "0.14.x"
   },

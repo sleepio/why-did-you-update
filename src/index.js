@@ -51,8 +51,6 @@ export const whyDidYouUpdate = (React, opts = {}) => {
     }
   } catch(e) {}
 
-
-
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = () => {
     React.Component.prototype.componentDidUpdate = _componentDidUpdate
     if (_createClass) {

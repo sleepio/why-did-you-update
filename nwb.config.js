@@ -4,17 +4,15 @@ module.exports = {
   type: 'react-component',
   build: {
     externals: {
-      'react': 'React'
+      react: 'React',
     },
     global: 'WhyDidYouUpdate',
     jsNext: false,
-    umd: true
+    umd: true,
   },
   webpack: {
     extra: {
-      plugins: [
-        new LodashModuleReplacementPlugin
-      ]
-    }
-  }
-}
+      plugins: [new LodashModuleReplacementPlugin()],
+    },
+  },
+};
