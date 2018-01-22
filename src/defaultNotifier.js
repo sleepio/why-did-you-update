@@ -24,6 +24,14 @@ const notifyDiff = ({name, prev, next, type}) => {
     console.warn(`${name}: Value did not change. Avoidable re-render!`)
     console.log(`Before:`, prev)
     console.log(`After:`, next)
+
+    // TODO: This logic should be mobed in deepDiff and return a list of
+    //       changed props
+    for (const [name, value] of Object.entries(prev)) {
+      if (value !== next[name]) {
+        console.log('"' + name + '" property is not equal by reference');
+      }
+    }
     break;
   case DIFF_TYPES.FUNCTIONS:
     console.warn(`${name}: Changes are in functions only. Possibly avoidable re-render?`)
