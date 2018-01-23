@@ -25,12 +25,14 @@ const notifyDiff = ({name, prev, next, type}) => {
     console.log(`Before:`, prev)
     console.log(`After:`, next)
 
-    // TODO: This logic should be mobed in deepDiff and return a list of
+    // TODO: This logic should be moved in deepDiff and return a list of
     //       changed props
-    for (const [name, value] of Object.entries(prev)) {
-      if (value !== next[name]) {
-        console.log('"' + name + '" property is not equal by reference');
-      }
+    if (prev && next) {
+      Object.keys(prev).forEach((key) => {
+        if (prev[key] !== next[key]) {
+          console.log('"' + key + '" property is not equal by reference');
+        }
+      });
     }
     break;
   case DIFF_TYPES.FUNCTIONS:
