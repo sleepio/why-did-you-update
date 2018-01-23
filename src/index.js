@@ -3,31 +3,36 @@ import {getDisplayName} from './getDisplayName'
 import {normalizeOptions} from './normalizeOptions'
 import {shouldInclude} from './shouldInclude'
 
-function createComponentDidUpdate (opts) {
-  return function componentDidUpdate (prevProps, prevState) {
-    const displayName = getDisplayName(this)
+export const checkForUpdate = (opts, component, prevProps, nextProps, prevState, nextState) => {
+  const displayName = getDisplayName(component)
 
-    if (!shouldInclude(displayName, opts)) {
-      return
-    }
-
-    const propsDiff = classifyDiff(prevProps, this.props, `${displayName}.props`)
-    if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
-      return
-    }
-
-    const stateDiff = classifyDiff(prevState, this.state, `${displayName}.state`)
-    if (stateDiff.type === DIFF_TYPES.UNAVOIDABLE) {
-      return
-    }
-    opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, [propsDiff, stateDiff])
+  if (!shouldInclude(displayName, opts)) {
+    return
   }
+
+  const propsDiff = classifyDiff(prevProps, nextProps, `${displayName}.props`)
+  if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
+    return
+  }
+
+  const stateDiff = classifyDiff(prevState, nextState, `${displayName}.state`)
+  if (stateDiff.type === DIFF_TYPES.UNAVOIDABLE) {
+    return
+  }
+
+  opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, [propsDiff, stateDiff])
 }
 
-export const whyDidYouUpdate = (React, opts = {}) => {
-  const _componentDidUpdate = React.Component.prototype.componentDidUpdate
+const whyDidYouUpdate = (React, opts = {}) => {
+
   opts = normalizeOptions(opts)
 
+  const createComponentDidUpdate = () => {
+    return function componentDidUpdate (prevProps, prevState) {
+      checkForUpdate(opts, this, prevProps, this.props, prevState, this.state);
+    }
+  }
+  const _componentDidUpdate = React.Component.prototype.componentDidUpdate
   React.Component.prototype.componentDidUpdate = createComponentDidUpdate(opts)
 
   let _createClass = null;
