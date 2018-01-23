@@ -33,16 +33,15 @@ const notifyDiff = ({type, name, prev, next, unequalKeys}) => {
     }
     break;
   case DIFF_TYPES.FUNCTIONS:
-  // TODO: Activate and adjust test
-    // console.warn(`${name}: Value did not change. Avoidable re-render!`)
-    // console.log(`Before:`, prev)
-    // console.log(`After:`, next)
-    //
-    // if (unequalKeys.length) {
+    console.warn(`${name}: Value did not change. Avoidable re-render!`)
+    console.log(`Before:`, prev)
+    console.log(`After:`, next)
+
+    if (unequalKeys.length) {
       console.warn(`${name}: Changes are in functions only. Possibly avoidable re-render?`)
       console.log(`Functions before:`, _pick(prev, unequalKeys))
       console.log(`Functions after:`, _pick(next, unequalKeys))
-    //}
+    }
     break;
   }
 }

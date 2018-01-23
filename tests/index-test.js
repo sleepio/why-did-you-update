@@ -84,14 +84,17 @@ describe(`whyDidYouUpdate`, () => {
     render(<Stub onChange={fn2} />, node)
 
     deepEqual(warnStore.entries, [
+      ['Stub.props: Value did not change. Avoidable re-render!'],
       ['Stub.props: Changes are in functions only. Possibly avoidable re-render?'],
       ['Stub.state: Value is the same (equal by reference). Avoidable re-render!']
-    ])
+    ]);
 
     equal(groupStore.entries.length, 1)
     equal(groupStore.entries[0][0], `Stub`)
-    equal(logStore.entries[0][0], 'Functions before:')
-    equal(logStore.entries[1][0], 'Functions after:')
+    equal(logStore.entries[0][0], 'Before:')
+    equal(logStore.entries[1][0], 'After:')
+    equal(logStore.entries[2][0], 'Functions before:')
+    equal(logStore.entries[3][0], 'Functions after:')
 
     /*
     I'd like to use deepEqual to check all log entries at once,
