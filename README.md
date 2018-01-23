@@ -1,21 +1,16 @@
-# Why did you update, bruh?
+# Why did you update
 
 [![Travis][build-badge]][build]
 [![npm version](https://badge.fury.io/js/why-did-you-update.svg)](https://badge.fury.io/js/why-did-you-update)
 
-### Wat?
+Why did you update is a function that monkey patches React and notifies you in the console when **potentially** unnecessary re-renders occur.
 
 ![](http://i.imgur.com/Ui8YUBe.png)
 
-A function that monkey patches React and notifies you in the console when **potentially** unnecessary re-renders occur. Super helpful for easy perf gainzzzzz.
+### Setup
+This library is available on npm, install it with: `npm install --save why-did-you-update` or `yarn add why-did-you-update`.
 
-### Install
-```bash
-npm install --save-dev why-did-you-update
-```
-
-### How to
-
+### Usage
 ```js
 import React from 'react'
 
@@ -25,16 +20,38 @@ if (process.env.NODE_ENV !== 'production') {
 }
 ```
 
+#### Options
+Optionally you can pass in options as a second parameter. The following options are available:
+- `include: RegExp`
+- `exclude: RegExp`
+- `groupByComponent: boolean`
+- `collapseComponentGroups: boolean`
+- `notifier: (groupByComponent: boolean, collapseComponentGroups: boolean, displayName: string, diffs: [Object]) => void`
+
+##### include / exclude
 You can include or exclude components by their displayName with the `include` and `exclude` options
 
 ```js
 whyDidYouUpdate(React, { include: /^pure/, exclude: /^Connect/ })
 ```
 
+##### groupByComponent / collapseComponentGroups
 By default, the changes for each component are grouped by component and these groups collapsed. This can be changed with the `groupByComponent` and `collapseComponentGroups` options:
 
 ```js
 whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: false })
+```
+
+##### notifier
+A notifier can be provided if the official one does not suite your needs.
+
+```js
+const notifier = (groupByComponent, collapseComponentGroups, displayName, diffs) => {
+  diffs.forEach(({name, prev, next, type}) => {
+    // Use the diff and notify the user somehow
+  });
+}
+whyDidYouUpdate(React, { notifier });
 ```
 
 ### Credit
