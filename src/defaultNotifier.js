@@ -1,4 +1,5 @@
 import {DIFF_TYPES} from './deepDiff'
+import _pick from 'lodash.pick'
 
 export const defaultNotifier = (groupByComponent, collapseComponentGroups, displayName, diffs) => {
   if (groupByComponent && collapseComponentGroups) {
@@ -14,7 +15,7 @@ export const defaultNotifier = (groupByComponent, collapseComponentGroups, displ
   }
 }
 
-const notifyDiff = ({name, prev, next, type}) => {
+const notifyDiff = ({type, name, prev, next, unequalKeys}) => {
   switch (type) {
   case DIFF_TYPES.SAME:
     console.warn(`${name}: Value is the same (equal by reference). Avoidable re-render!`)
@@ -25,20 +26,23 @@ const notifyDiff = ({name, prev, next, type}) => {
     console.log(`Before:`, prev)
     console.log(`After:`, next)
 
-    // TODO: This logic should be moved in deepDiff and return a list of
-    //       changed props
-    if (prev && next) {
-      Object.keys(prev).forEach((key) => {
-        if (prev[key] !== next[key]) {
-          console.log('"' + key + '" property is not equal by reference');
-        }
-      });
+    if (unequalKeys.length) {
+      console.warn(`${name}: Properties not equal by reference that likely triggered the re-render!`)
+      console.log(`Before:`, _pick(prev, unequalKeys));
+      console.log(`After:`, _pick(next, unequalKeys));
     }
     break;
   case DIFF_TYPES.FUNCTIONS:
-    console.warn(`${name}: Changes are in functions only. Possibly avoidable re-render?`)
-    console.log(`Functions before:`, prev)
-    console.log(`Functions after:`, next)
+  // TODO: Activate and adjust test
+    // console.warn(`${name}: Value did not change. Avoidable re-render!`)
+    // console.log(`Before:`, prev)
+    // console.log(`After:`, next)
+    //
+    // if (unequalKeys.length) {
+      console.warn(`${name}: Changes are in functions only. Possibly avoidable re-render?`)
+      console.log(`Functions before:`, _pick(prev, unequalKeys))
+      console.log(`Functions after:`, _pick(next, unequalKeys))
+    //}
     break;
   }
 }

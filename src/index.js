@@ -20,6 +20,7 @@ function createComponentDidUpdate (opts) {
     if (stateDiff.type === DIFF_TYPES.UNAVOIDABLE) {
       return
     }
+
     opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, [propsDiff, stateDiff])
   }
 }

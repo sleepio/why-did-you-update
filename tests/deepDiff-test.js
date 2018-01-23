@@ -15,6 +15,17 @@ describe('classifyDiff', () => {
     equal(diffType(prev, next), DIFF_TYPES.EQUAL)
   })
 
+  it('detects equal props as avoidable and returns extra information about why', () => {
+    const prev = {a: 1, b: [11, 22]}
+    const next = {a: 1, b: [11, 22]}
+
+    const diff = classifyDiff(prev, next, 'MyComponent.props')
+    const unequalKeys = diff.unequalKeys;
+
+    equal(diff.type, DIFF_TYPES.EQUAL);
+    deepEqual(unequalKeys, ['b']);
+  });
+
   it('detects change of single field in props as unavoidable', () => {
     const prev = {a: 1, b: [11, 22]}
     const next = {a: 2, b: [11, 22]}
@@ -43,7 +54,7 @@ describe('classifyDiff', () => {
     equal(diffType(prev, next), DIFF_TYPES.UNAVOIDABLE)
   })
 
-  it('returns object with changed function without non-function fields', () => {
+  it('returns object with changed function', () => {
     const createFn = () => function onChange () {}
 
     const prevFn = createFn()
@@ -54,8 +65,24 @@ describe('classifyDiff', () => {
 
     const diff = classifyDiff(prev, next, 'MyComponent.props')
     equal(diff.type, DIFF_TYPES.FUNCTIONS)
-    deepEqual(diff.prev, {a: prevFn})
-    deepEqual(diff.next, {a: nextFn})
+    deepEqual(diff.prev, {a: prevFn, b: [11, 22]})
+    deepEqual(diff.next, {a: nextFn, b: [11, 22]})
+  })
+
+  it('returns object with informations about changed functions', () => {
+    const createFn = () => function onChange () {}
+
+    const prevFn = createFn()
+    const prev = {a: prevFn, b: [11, 22]}
+
+    const nextFn = createFn()
+    const next = {a: nextFn, b: [11, 22]}
+
+    const diff = classifyDiff(prev, next, 'MyComponent.props')
+    equal(diff.type, DIFF_TYPES.FUNCTIONS)
+
+    const unequalKeys = diff.unequalKeys;
+    deepEqual(unequalKeys, ['a']);
   })
 
   it('detects complicated hierarchy as avoidable', () => {
