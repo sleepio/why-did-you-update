@@ -36,7 +36,10 @@
     "react": "0.14.x",
     "react-dom": "0.14.x"
   },
-  "author": "Gabe Scholz",
+  "authors": [
+    "Michael Schneider <mischneider1@gmail.com> (https://github.com/maicki)",
+    "Gabe Scholz <github@gabe.pizza> (https://github.com/garbles)"
+  ],
   "license": "MIT",
   "repository": "https://github.com/garbles/why-did-you-update",
   "keywords": [
