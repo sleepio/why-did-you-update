@@ -1,27 +1,7 @@
-import {classifyDiff, DIFF_TYPES} from './deepDiff'
-import {getDisplayName} from './getDisplayName'
-import {normalizeOptions} from './normalizeOptions'
-import {shouldInclude} from './shouldInclude'
+import { normalizeOptions } from './normalizeOptions'
+import { checkForUpdate } from './checkForUpdates';
 
-export const checkForUpdate = (opts, component, prevProps, nextProps, prevState, nextState) => {
-  const displayName = getDisplayName(component)
-
-  if (!shouldInclude(displayName, opts)) {
-    return
-  }
-
-  const propsDiff = classifyDiff(prevProps, nextProps, `${displayName}.props`)
-  if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
-    return
-  }
-
-  const stateDiff = classifyDiff(prevState, nextState, `${displayName}.state`)
-  if (stateDiff.type === DIFF_TYPES.UNAVOIDABLE) {
-    return
-  }
-
-  opts.notifier(opts.groupByComponent, opts.collapseComponentGroups, displayName, [propsDiff, stateDiff])
-}
+import { withWhyDidYouUpdate } from './withWhyDidYouUpdate';
 
 const whyDidYouUpdate = (React, opts = {}) => {
 
@@ -67,4 +47,5 @@ const whyDidYouUpdate = (React, opts = {}) => {
   return React
 }
 
-export default whyDidYouUpdate
+export { withWhyDidYouUpdate };
+export default whyDidYouUpdate;

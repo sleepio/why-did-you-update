@@ -3,7 +3,7 @@
 [![Travis][build-badge]][build]
 [![npm version](https://badge.fury.io/js/why-did-you-update.svg)](https://badge.fury.io/js/why-did-you-update)
 
-Why did you update is a function that monkey patches React and notifies you in the console when **potentially** unnecessary re-renders occur.
+Why did you update is a function that monkey patches React or provides a HOC that notifies you in the console when **potentially** a unnecessary re-render occurs.
 
 ![](http://i.imgur.com/Ui8YUBe.png)
 
@@ -11,13 +11,29 @@ Why did you update is a function that monkey patches React and notifies you in t
 This library is available on npm, install it with: `npm install --save why-did-you-update` or `yarn add why-did-you-update`.
 
 ### Usage
+1. Monkey Patching React
 ```js
-import React from 'react'
+import React from 'react';
 
 if (process.env.NODE_ENV !== 'production') {
-  const {whyDidYouUpdate} = require('why-did-you-update')
-  whyDidYouUpdate(React)
+  const {whyDidYouUpdate} = require('why-did-you-update');
+  whyDidYouUpdate(React);
 }
+```
+
+2. Higher Order Component
+```js
+import React from 'react';
+
+const SomeComponent = () => {}
+
+if (process.env.NODE_ENV !== 'production') {
+  import { withWhyDidYouUpdate } from 'why-did-you-update';
+  export default withWhyDidYouUpdate(SomeComponent);
+} else {
+  export default SomeComponent;
+}
+
 ```
 
 #### Options

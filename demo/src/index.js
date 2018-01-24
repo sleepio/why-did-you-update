@@ -1,8 +1,7 @@
 import React from 'react'
 import {render} from 'react-dom'
 
-import whyDidYouUpdate from '../../src'
-import { withWhyDidYouUpdate } from '../../src/components/WhyDidYouUpdate'
+import whyDidYouUpdate, { withWhyDidYouUpdate } from '../../src'
 
 whyDidYouUpdate(React)
 
