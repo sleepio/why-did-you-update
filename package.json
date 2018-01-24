@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "lodash-webpack-plugin": "^0.8.1",
-    "nwb": "0.9.x",
-    "react": "0.14.x",
-    "react-dom": "0.14.x"
+    "nwb": "0.21.x",
+    "react": "16.x",
+    "react-dom": "16.x"
   },
   "author": "Gabe Scholz",
   "license": "MIT",

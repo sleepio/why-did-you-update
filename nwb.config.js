@@ -2,13 +2,13 @@ var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   type: 'react-component',
-  build: {
-    externals: {
-      'react': 'React'
-    },
-    global: 'WhyDidYouUpdate',
-    jsNext: false,
-    umd: true
+  npm: {
+    umd: {
+      externals: {
+        'react': 'React'
+      },
+      global: 'WhyDidYouUpdate',
+    }
   },
   webpack: {
     extra: {

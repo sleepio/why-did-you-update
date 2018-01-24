@@ -181,47 +181,6 @@ describe(`whyDidYouUpdate wrapper`, () => {
     equal(groupStore.entries[0][0], `Stub`)
   })
 
-  it(`works with createClass`, () => {
-    whyDidYouUpdate(React)
-
-    const Foo = React.createClass({
-      displayName: `Foo`,
-
-      render () {
-        return <noscript />
-      }
-    })
-
-    render(<Foo a={1} />, node)
-    render(<Foo a={1} />, node)
-
-    equal(warnStore.entries.length, 2)
-    equal(groupStore.entries.length, 1)
-    equal(groupStore.entries[0][0], `Foo`)
-  })
-
-  it(`still calls the original componentDidUpdate for createClass`, done => {
-    whyDidYouUpdate(React)
-
-    const Foo = React.createClass({
-      displayName: `Foo`,
-
-      componentDidUpdate () {
-        done()
-      },
-
-      render () {
-        return <noscript />
-      }
-    })
-
-    render(<Foo a={1} />, node)
-    render(<Foo a={1} />, node)
-
-    equal(warnStore.entries.length, 1)
-    equal(groupStore.entries.length, 0)
-  })
-
   it('handler a complicated hierarchy', () => {
     const props = {
       "muiTheme": {
