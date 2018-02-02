@@ -1,10 +1,4 @@
-import _isEqual from 'lodash.isequal'
-import _isFunction from 'lodash.isfunction'
-import _keys from 'lodash.keys'
-import _union from 'lodash.union'
-import _filter from 'lodash.filter'
-import _every from 'lodash.every'
-import _pick from 'lodash.pick'
+import _ from 'lodash'
 
 export const DIFF_TYPES = {
   UNAVOIDABLE: 'unavoidable',
@@ -23,7 +17,7 @@ export const classifyDiff = (prev, next, name) => {
     }
   }
 
-  if (_isEqual(prev, next)) {
+  if (_.isEqual(prev, next)) {
     return {
       type: DIFF_TYPES.EQUAL,
       name,
@@ -41,22 +35,22 @@ export const classifyDiff = (prev, next, name) => {
     }
   }
 
-  const isChanged = key => (prev[key] !== next[key]) && (!_isEqual(prev[key], next[key]));
+  const isChanged = key => (prev[key] !== next[key]) && (!_.isEqual(prev[key], next[key]));
   const isSameFunction = key => {
     const prevFn = prev[key];
     const nextFn = next[key];
-    return _isFunction(prevFn) && _isFunction(nextFn) && prevFn.name === nextFn.name;
+    return _.isFunction(prevFn) && _.isFunction(nextFn) && prevFn.name === nextFn.name;
   };
 
-  const keys = _union(_keys(prev), _keys(next));
-  const changedKeys = _filter(keys, isChanged);
+  const keys = _.union(_.keys(prev), _.keys(next));
+  const changedKeys = _.filter(keys, isChanged);
 
-  if (changedKeys.length && _every(changedKeys, isSameFunction)) {
+  if (changedKeys.length && _.every(changedKeys, isSameFunction)) {
     return {
       type: DIFF_TYPES.FUNCTIONS,
       name,
-      prev: _pick(prev, changedKeys),
-      next: _pick(next, changedKeys)
+      prev: _.pick(prev, changedKeys),
+      next: _.pick(next, changedKeys)
     }
   }
 

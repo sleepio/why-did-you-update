@@ -1,6 +1,6 @@
-import _some from 'lodash.some'
+import _ from 'lodash'
 
 export const shouldInclude = (displayName, {include, exclude}) => {
-  return _some(include, r => r.test(displayName)) &&
-    !_some(exclude, r => r.test(displayName))
+  return _.some(include, r => r.test(displayName)) &&
+    !_.some(exclude, r => r.test(displayName))
 }
