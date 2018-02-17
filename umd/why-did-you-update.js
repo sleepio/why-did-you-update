@@ -1,5 +1,5 @@
 /*!
- * why-did-you-update 0.1.0
+ * why-did-you-update 0.1.1
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -285,6 +285,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	exports.defaultNotifier = defaultNotifier;
+	// Disables yellow box in React Native before warn
+	var consoleWarn = function consoleWarn(args) {
+	  var oldDisableYellowBox = console.disableYellowBox;
+	  console.disableYellowBox = true;
+	  console.warn(args);
+	  console.disableYellowBox = oldDisableYellowBox;
+	};
+
 	var notifyDiff = function notifyDiff(_ref) {
 	  var name = _ref.name;
 	  var prev = _ref.prev;
@@ -293,16 +301,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  switch (type) {
 	    case _deepDiff.DIFF_TYPES.SAME:
-	      console.warn(name + ': Value is the same (equal by reference). Avoidable re-render!');
+	      consoleWarn(name + ': Value is the same (equal by reference). Avoidable re-render!');
 	      console.log('Value:', prev);
 	      break;
 	    case _deepDiff.DIFF_TYPES.EQUAL:
-	      console.warn(name + ': Value did not change. Avoidable re-render!');
+	      consoleWarn(name + ': Value did not change. Avoidable re-render!');
 	      console.log('Before:', prev);
 	      console.log('After:', next);
+
+	      // TODO: This logic should be moved in deepDiff and return a list of
+	      //       changed props
+	      if (prev && next) {
+	        Object.keys(prev).forEach(function (key) {
+	          if (prev[key] !== next[key]) {
+	            console.log('"' + key + '" property is not equal by reference');
+	          }
+	        });
+	      }
 	      break;
 	    case _deepDiff.DIFF_TYPES.FUNCTIONS:
-	      console.warn(name + ': Changes are in functions only. Possibly avoidable re-render?');
+	      consoleWarn(name + ': Changes are in functions only. Possibly avoidable re-render?');
 	      console.log('Functions before:', prev);
 	      console.log('Functions after:', next);
 	      break;
@@ -343,7 +361,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var DEFAULT_INCLUDE = /./;
 	exports.DEFAULT_INCLUDE = DEFAULT_INCLUDE;
-	var DEFAULT_EXCLUDE = /[^a-zA-Z0-9]/;
+	var DEFAULT_EXCLUDE = /[^a-zA-Z0-9()]/;
 
 	exports.DEFAULT_EXCLUDE = DEFAULT_EXCLUDE;
 	var toRegExp = function toRegExp(s) {
