@@ -14,5 +14,5 @@ module.exports = {
     extra: {
       plugins: [new LodashModuleReplacementPlugin()],
     },
-  },
+  }
 };

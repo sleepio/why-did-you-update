@@ -1,6 +1,7 @@
 import {deepEqual, equal, ok} from 'assert'
 import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
+import createReactClass from 'create-react-class';
 
 import whyDidYouUpdate from 'src/'
 
@@ -181,10 +182,43 @@ describe(`whyDidYouUpdate wrapper`, () => {
     equal(groupStore.entries[0][0], `Stub`)
   })
 
+  it(`still calls the original componentDidUpdate for class component`, done => {
+    whyDidYouUpdate(React)
+
+    class Foo extends React.Component {
+      componentDidUpdate () {
+        done()
+      }
+
+      render () {
+        return <noscript />
+      }
+    }
+
+    render(<Foo a={1} />, node)
+    render(<Foo a={1} />, node)
+
+    equal(warnStore.entries.length, 1)
+    equal(groupStore.entries.length, 0)
+  })
+
+  it(`works with functional components`, () => {
+    whyDidYouUpdate(React);
+
+    const Foo = () => <noscript/>;
+
+    render(<Foo a={1} />, node)
+    render(<Foo a={1} />, node)
+
+    equal(warnStore.entries.length, 2)
+    equal(groupStore.entries.length, 1)
+    equal(groupStore.entries[0][0], `Foo`)
+  })
+
   it(`works with createClass`, () => {
     whyDidYouUpdate(React)
 
-    const Foo = React.createClass({
+    const Foo = createReactClass({
       displayName: `Foo`,
 
       render () {
@@ -203,7 +237,7 @@ describe(`whyDidYouUpdate wrapper`, () => {
   it(`still calls the original componentDidUpdate for createClass`, done => {
     whyDidYouUpdate(React)
 
-    const Foo = React.createClass({
+    const Foo = createReactClass({
       displayName: `Foo`,
 
       componentDidUpdate () {

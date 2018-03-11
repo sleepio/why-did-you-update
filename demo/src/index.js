@@ -7,7 +7,7 @@ whyDidYouUpdate(React)
 
 class ClassDemo extends React.Component {
   render () {
-    return <div />
+    return <div/>;
   }
 }
 

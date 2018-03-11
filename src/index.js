@@ -5,7 +5,7 @@ import {shouldInclude} from './shouldInclude'
 
 function createComponentDidUpdate (opts) {
   return function componentDidUpdate (prevProps, prevState) {
-    const displayName = getDisplayName(this)
+    const displayName = getDisplayName(this.constructor); 
 
     if (!shouldInclude(displayName, opts)) {
       return
@@ -24,38 +24,56 @@ function createComponentDidUpdate (opts) {
   }
 }
 
-export const whyDidYouUpdate = (React, opts = {}) => {
-  const _componentDidUpdate = React.Component.prototype.componentDidUpdate
-  opts = normalizeOptions(opts)
-
-  React.Component.prototype.componentDidUpdate = createComponentDidUpdate(opts)
-
-  let _createClass = null;
-  try {
-    _createClass = React.createClass;
-
-    if (_createClass) {
-      React.createClass = function createClass (obj) {
-        const Mixin = {
-          componentDidUpdate: createComponentDidUpdate(opts)
-        }
-
-        if (obj.mixins) {
-          obj.mixins = [Mixin].concat(obj.mixins)
-        } else {
-          obj.mixins = [Mixin]
-        }
-
-        return _createClass.call(React, obj)
+const createClassComponent = (ctor, opts) => {
+  let cdu = createComponentDidUpdate(opts);
+  let WDYUClassComponent = class extends ctor {
+    componentDidUpdate(prevProps, prevState) {
+      cdu.call(this, prevProps, prevState);
+      if (typeof ctor.prototype.componentDidUpdate === 'function') {
+        ctor.prototype.componentDidUpdate.call(this, prevProps, prevState);
       }
     }
-  } catch(e) {}
+  };
+  WDYUClassComponent.displayName = getDisplayName(ctor);
+  WDYUClassComponent.defaultProps = ctor.defaultProps;
+  return WDYUClassComponent;
+}
+
+const createFunctionalComponent = (ctor, opts, ReactComponent) => {
+  let cdu = createComponentDidUpdate(opts);
+  let WDYUFunctionalComponent = class extends ReactComponent {
+    render() {
+      return ctor(this.props);
+    }
+    componentDidUpdate(prevProps, prevState) {
+      cdu.call(this, prevProps, prevState);
+    }
+  }
+  WDYUFunctionalComponent.displayName = getDisplayName(ctor);
+  WDYUFunctionalComponent.defaultProps = ctor.defaultProps;
+  return WDYUFunctionalComponent;
+}
+
+export const whyDidYouUpdate = (React, opts = {}) => {
+  opts = normalizeOptions(opts)
+  let oldFn = React.createElement;
+  const memoizer = new Map();
+  React.createElement = function(type, ...rest) {
+    let ctor = type;
+    if (ctor.prototype && typeof ctor.prototype.render === 'function') {
+      // class component
+      ctor = memoizer.get(ctor) || 
+        (memoizer.set(ctor, createClassComponent(ctor, opts)) && memoizer.get(ctor));
+    } else if (typeof ctor === 'function') {
+      // functional component
+      ctor = memoizer.get(ctor) ||
+        (memoizer.set(ctor, createFunctionalComponent(ctor, opts, React.Component)) && memoizer.get(ctor));
+    }
+    return oldFn.apply(React, [ctor, ...rest]);
+  };
 
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = () => {
-    React.Component.prototype.componentDidUpdate = _componentDidUpdate
-    if (_createClass) {
-      React.createClass = _createClass
-    }
+    React.createElement = oldFn
     delete React.__WHY_DID_YOU_UPDATE_RESTORE_FN__
   }
 
