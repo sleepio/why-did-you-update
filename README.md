@@ -12,7 +12,7 @@ This library is available on npm, install it with: `npm install --save why-did-y
 
 ### Usage
 ```js
-import React from 'react'
+import React from 'react';
 
 if (process.env.NODE_ENV !== 'production') {
   const {whyDidYouUpdate} = require('why-did-you-update');
@@ -32,14 +32,14 @@ Optionally you can pass in options as a second parameter. The following options 
 You can include or exclude components by their displayName with the `include` and `exclude` options
 
 ```js
-whyDidYouUpdate(React, { include: /^pure/, exclude: /^Connect/ })
+whyDidYouUpdate(React, { include: /^pure/, exclude: /^Connect/ });
 ```
 
 ##### groupByComponent / collapseComponentGroups
 By default, the changes for each component are grouped by component and these groups collapsed. This can be changed with the `groupByComponent` and `collapseComponentGroups` options:
 
 ```js
-whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: false })
+whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: false });
 ```
 
 ##### notifier
@@ -50,7 +50,7 @@ const notifier = (groupByComponent, collapseComponentGroups, displayName, diffs)
   diffs.forEach(({name, prev, next, type}) => {
     // Use the diff and notify the user somehow
   });
-}
+};
 whyDidYouUpdate(React, { notifier });
 ```
 
