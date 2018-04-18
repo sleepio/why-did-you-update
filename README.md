@@ -22,8 +22,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 #### Options
 Optionally you can pass in options as a second parameter. The following options are available:
-- `include: RegExp`
-- `exclude: RegExp`
+- `include: [RegExp]`
+- `exclude: [RegExp]`
 - `groupByComponent: boolean`
 - `collapseComponentGroups: boolean`
 - `notifier: (groupByComponent: boolean, collapseComponentGroups: boolean, displayName: string, diffs: [Object]) => void`
@@ -32,7 +32,7 @@ Optionally you can pass in options as a second parameter. The following options 
 You can include or exclude components by their displayName with the `include` and `exclude` options
 
 ```js
-whyDidYouUpdate(React, { include: /^pure/, exclude: /^Connect/ });
+whyDidYouUpdate(React, { include: [/^pure/], exclude: [/^Connect/] });
 ```
 
 ##### groupByComponent / collapseComponentGroups
