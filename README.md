@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/maicki/why-did-you-update.svg?branch=master)](https://travis-ci.org/maicki/why-did-you-update)
 [![npm version](https://badge.fury.io/js/why-did-you-update.svg)](https://badge.fury.io/js/why-did-you-update)
 
-Why did you update is a function that monkey patches React and notifies you in the console when **potentially** unnecessary re-renders occur.
+`Why-did-you-update` is a function that monkey patches React and notifies you in the console when **potentially** unnecessary re-renders occur.
 
 ![](https://i.imgur.com/NjI4PYt.png)
 
