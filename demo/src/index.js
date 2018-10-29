@@ -20,3 +20,9 @@ render(<ClassDemo a={1} b={sameByReferenceObject} />, document.getElementById("d
 
 console.info("Third render where the props are the same by value but not by reference.");
 render(<ClassDemo a={1} b={{ b: "b" }} />, document.getElementById("demo"));
+
+console.info("Fourth render where we add a function (does not trigger whyDidYouUpdate).");
+render(<ClassDemo a={1} fn={function something() { }} />, document.getElementById("demo"));
+
+console.info("Fifth render with a function by the same name.");
+render(<ClassDemo a={1} fn={function something() { }} />, document.getElementById("demo"));

@@ -90,17 +90,50 @@ prevProps === props && prevState === state
 #### Not Equal by Reference
 
 If you receive the message:
-"X" property is not equal by reference. This means it received a new object with the same value. For example:
 ```
+"X" property is not equal by reference.
+```
+This means it received a new object with the same value. For example:
+```js
 const a = {"c": "d"}
 const b = {"c": "d"}
 a !== b
 ```
 To avoid this warning, make sure to not recreate objects:
-```
+```js
 const a = {"c": "d"}
 const b = a
 a === b
+```
+
+#### Changes Are in Functions Only
+
+If you receive the message:
+```
+Changes are in functions only. Possibly avoidable re-render?
+```
+It's probably because you are creating a function inside render:
+```js
+render(){
+  return <div fn={function something(){...}}/>
+}
+```
+And this triggers a re-render because:
+```js
+function something(){...} !== function something(){...}
+```
+You can avoid it by binding this function in advance and then reusing it on all renders
+```js
+constructor(props){
+  super(props)
+  this.something = this.something.bind(this)
+}
+something(){
+  ...
+}
+render(){
+  return <div fn={this.something}/>
+}
 ```
 
 ### Credit
