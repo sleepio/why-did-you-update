@@ -26,18 +26,35 @@ class Stub extends React.Component {
   }
 }
 
-describe(`whyDidYouUpdate`, () => {
-  let node
-  let groupStore
-  let warnStore
-  let logStore
+let node
+let groupStore
+let warnStore
+let logStore
 
+function createTestElements() {
+  node = document.createElement(`div`)
+  groupStore = createConsoleStore(`groupCollapsed`)
+  warnStore = createConsoleStore(`warn`)
+  logStore = createConsoleStore(`log`)
+}
+
+describe(`whyDidYouUpdate import`, () => {
+  it(`doesn't run upon import`, () => {
+    createTestElements()
+
+    render(<Stub a={1} />, node)
+    render(<Stub a={1} />, node)
+
+    equal(groupStore.entries.length, 0)
+    equal(warnStore.entries.length, 0)
+    equal(logStore.entries.length, 0)
+  })
+})
+
+describe(`whyDidYouUpdate`, () => {
   beforeEach(() => {
     whyDidYouUpdate(React)
-    node = document.createElement(`div`)
-    groupStore = createConsoleStore(`groupCollapsed`)
-    warnStore = createConsoleStore(`warn`)
-    logStore = createConsoleStore(`log`)
+    createTestElements()
   })
 
   afterEach(() => {
