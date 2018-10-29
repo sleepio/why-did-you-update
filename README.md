@@ -61,9 +61,9 @@ const notifier = (groupByComponent, collapseComponentGroups, displayName, diffs)
 whyDidYouUpdate(React, { notifier });
 ```
 
-### Common fixing scenarios
+### Common Fixing Scenarios
 
-#### Value did not change
+#### Value Did Not Change
 
 If you receive the message:
 ```
@@ -87,7 +87,7 @@ caused by `this.forceUpdate()` or `ReactDom.render()`:
 prevProps === props && prevState === state
 ```
 
-#### Not Equal by reference
+#### Not Equal by Reference
 
 If you receive the message:
 "X" property is not equal by reference. This means it received a new object with the same value. For example:
