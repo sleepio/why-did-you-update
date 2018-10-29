@@ -14,6 +14,9 @@ Why did you update is a function that monkey patches React and notifies you in t
 ### Setup
 This library is available on npm, install it with: `npm install --save why-did-you-update` or `yarn add why-did-you-update`.
 
+### Sandbox
+You can test the library [>> HERE <<](https://codesandbox.io/s/mywnl5xp58?expanddevtools=1) (notice the console).
+
 ### Usage
 ```js
 import React from 'react';
@@ -56,6 +59,48 @@ const notifier = (groupByComponent, collapseComponentGroups, displayName, diffs)
   });
 };
 whyDidYouUpdate(React, { notifier });
+```
+
+### Common fixing scenarios
+
+#### Value did not change
+
+If you receive the message:
+```
+X.[props/state]: Value did not change. Avoidable re-render!`
+```
+About the props or the state object of component `X`, it means the component was rendered
+although the object is the same:
+```js
+prevProps === props
+```
+or
+```js
+prevState === state
+```
+Usually renders are caused because of the rendering of their father, or state change.
+In both cases, at least one of the two would change, at least by reference.
+
+If both the state and the props are the same object, it means the render was
+caused by `this.forceUpdate()` or `ReactDom.render()`:
+```js
+prevProps === props && prevState === state
+```
+
+#### Not Equal by reference
+
+If you receive the message:
+"X" property is not equal by reference. This means it received a new object with the same value. For example:
+```
+const a = {"c": "d"}
+const b = {"c": "d"}
+a !== b
+```
+To avoid this warning, make sure to not recreate objects:
+```
+const a = {"c": "d"}
+const b = a
+a === b
 ```
 
 ### Credit
