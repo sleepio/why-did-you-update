@@ -1,11 +1,6 @@
-'use strict';
+import { DIFF_TYPES } from './deepDiff';
 
-exports.__esModule = true;
-exports.defaultNotifier = undefined;
-
-var _deepDiff = require('./deepDiff');
-
-var defaultNotifier = exports.defaultNotifier = function defaultNotifier(groupByComponent, collapseComponentGroups, displayName, diffs) {
+export var defaultNotifier = function defaultNotifier(groupByComponent, collapseComponentGroups, displayName, diffs) {
   if (groupByComponent && collapseComponentGroups) {
     console.groupCollapsed && console.groupCollapsed(displayName);
   } else if (groupByComponent) {
@@ -34,11 +29,11 @@ var notifyDiff = function notifyDiff(_ref) {
       type = _ref.type;
 
   switch (type) {
-    case _deepDiff.DIFF_TYPES.SAME:
+    case DIFF_TYPES.SAME:
       consoleWarn(name + ': Value is the same (equal by reference). Avoidable re-render!');
       console.log('Value:', prev);
       break;
-    case _deepDiff.DIFF_TYPES.EQUAL:
+    case DIFF_TYPES.EQUAL:
       consoleWarn(name + ': Value did not change. Avoidable re-render!');
       console.log('Before:', prev);
       console.log('After:', next);
@@ -53,7 +48,7 @@ var notifyDiff = function notifyDiff(_ref) {
         });
       }
       break;
-    case _deepDiff.DIFF_TYPES.FUNCTIONS:
+    case DIFF_TYPES.FUNCTIONS:
       consoleWarn(name + ': Changes are in functions only. Possibly avoidable re-render?');
       console.log('Functions before:', prev);
       console.log('Functions after:', next);

@@ -1,27 +1,19 @@
-'use strict';
+import _isString from 'lodash/isString';
 
-exports.__esModule = true;
-exports.normalizeOptions = exports.DEFAULT_EXCLUDE = exports.DEFAULT_INCLUDE = undefined;
 
-var _isString2 = require('lodash/isString');
+import { defaultNotifier } from './defaultNotifier';
 
-var _isString3 = _interopRequireDefault(_isString2);
-
-var _defaultNotifier = require('./defaultNotifier');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var DEFAULT_INCLUDE = exports.DEFAULT_INCLUDE = /./;
-var DEFAULT_EXCLUDE = exports.DEFAULT_EXCLUDE = /[^a-zA-Z0-9()]/;
+export var DEFAULT_INCLUDE = /./;
+export var DEFAULT_EXCLUDE = /[^a-zA-Z0-9()]/;
 
 var toRegExp = function toRegExp(s) {
-  return (0, _isString3.default)(s) ? new RegExp('^' + s + '$') : s;
+  return _isString(s) ? new RegExp('^' + s + '$') : s;
 };
 var toArray = function toArray(o) {
   return o ? [].concat(o) : [];
 };
 
-var normalizeOptions = exports.normalizeOptions = function normalizeOptions() {
+export var normalizeOptions = function normalizeOptions() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var _opts$include = opts.include,
       include = _opts$include === undefined ? [DEFAULT_INCLUDE] : _opts$include,
@@ -32,7 +24,7 @@ var normalizeOptions = exports.normalizeOptions = function normalizeOptions() {
       _opts$collapseCompone = opts.collapseComponentGroups,
       collapseComponentGroups = _opts$collapseCompone === undefined ? true : _opts$collapseCompone,
       _opts$notifier = opts.notifier,
-      notifier = _opts$notifier === undefined ? _defaultNotifier.defaultNotifier : _opts$notifier;
+      notifier = _opts$notifier === undefined ? defaultNotifier : _opts$notifier;
 
 
   return {
