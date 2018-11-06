@@ -256,6 +256,27 @@ describe(`whyDidYouUpdate wrapper`, () => {
     equal(groupStore.entries.length, 0)
   })
 
+  it(`doesn't swallows original statics of a component`, () => {
+    whyDidYouUpdate(React)
+
+    class Foo extends React.Component {
+      static someStaticValue = 'someStaticValue'
+      render () {
+        return <noscript />
+      }
+    }
+
+    equal(Foo.someStaticValue, 'someStaticValue')
+  })
+
+  it(`doesn't swallows original statics of a functional component`, () => {
+    whyDidYouUpdate(React)
+
+    const Foo = () => <noscript/>;
+    Foo.someStaticValue = 'someStaticValue'
+    equal(Foo.someStaticValue, 'someStaticValue')
+  })
+
   it('handler a complicated hierarchy', () => {
     const props = {
       "muiTheme": {
