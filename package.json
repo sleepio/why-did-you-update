@@ -1,6 +1,6 @@
 {
   "name": "why-did-you-update",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Patch React to discover unnecessary re-renders",
   "main": "lib/index.js",
   "files": [
@@ -21,7 +21,7 @@
     "lodash": "^4.0.0"
   },
   "peerDependencies": {
-    "react": ">=15.0 || 0.14.x"
+    "react": ">=16"
   },
   "devDependencies": {
     "babel-plugin-lodash": "^3.3.4",
@@ -36,8 +36,8 @@
     "lodash-webpack-plugin": "^0.11.5",
     "nwb": "^0.23.0",
     "prettier": "^1.14.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0"
   },
   "authors": [
     "Vitali Zaidman <vzaidman@gmail.com> (https://github.com/vzaidman)",

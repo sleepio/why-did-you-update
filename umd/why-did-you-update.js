@@ -1,5 +1,5 @@
 /*!
- * why-did-you-update v1.0.1
+ * why-did-you-update v1.0.2
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
