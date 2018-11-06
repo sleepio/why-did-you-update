@@ -1,7 +1,3 @@
-# SEARCHING FOR MAINTAINER
-
-Unfortunately due to time constraints, it's not possible for me to actively maintain `why-did-you-update` anymore. Therefore I'm looking for a person who is actively invested in keeping `why-did-you-update` alive and well. If you are interested in this project, please let me know.
-
 # Why did you update
 
 [![Build Status](https://travis-ci.org/maicki/why-did-you-update.svg?branch=master)](https://travis-ci.org/maicki/why-did-you-update)
