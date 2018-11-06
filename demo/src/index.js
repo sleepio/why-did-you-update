@@ -26,3 +26,6 @@ render(<ClassDemo a={1} fn={function something() { }} />, document.getElementByI
 
 console.info("Fifth render with a function by the same name.");
 render(<ClassDemo a={1} fn={function something() { }} />, document.getElementById("demo"));
+
+render(<ClassDemo a={1} b={{c: {d: 4}}} e={function something () {}} f={1} />, document.querySelector('#demo'))
+render(<ClassDemo a={1} b={{c: {d: 4}}} e={function something () {}} f={2} />, document.querySelector('#demo'))

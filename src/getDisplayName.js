@@ -1,1 +1,1 @@
-export const getDisplayName = o => o.displayName || o.constructor.displayName || o.constructor.name
+export const getDisplayName = ctor => ctor.displayName || ctor.name;
