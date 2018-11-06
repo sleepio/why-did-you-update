@@ -1,15 +1,15 @@
 {
   "name": "why-did-you-update",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Patch React to discover unnecessary re-renders",
   "main": "lib/index.js",
   "files": [
-    "es6",
+    "es",
     "lib",
     "umd"
   ],
   "scripts": {
-    "eslint": "eslint . --ext js",
+    "eslint": "eslint src --ext js",
     "build": "nwb build",
     "clean": "nwb clean",
     "start": "nwb serve",
@@ -18,35 +18,29 @@
     "release:patch": "nwb build && npm version patch && npm publish"
   },
   "dependencies": {
-    "lodash.every": "^4.6.0",
-    "lodash.filter": "^4.6.0",
-    "lodash.isequal": "^4.5.0",
-    "lodash.isfunction": "^3.0.8",
-    "lodash.isstring": "^4.0.1",
-    "lodash.keys": "^4.2.0",
-    "lodash.pick": "^4.4.0",
-    "lodash.some": "^4.6.0",
-    "lodash.union": "^4.6.0"
+    "lodash": "^4.0.0"
   },
   "peerDependencies": {
     "react": ">=15.0 || 0.14.x"
   },
   "devDependencies": {
+    "babel-plugin-lodash": "^3.3.4",
     "create-react-class": "^15.6.3",
-    "eslint": "4.16.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-prettier": "2.9.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-prettier": "2.5.0",
-    "eslint-plugin-react": "^7.5.1",
-    "lodash-webpack-plugin": "^0.8.1",
-    "nwb": "^0.20.x",
-    "prettier": "1.10.2",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "lodash-webpack-plugin": "^0.11.5",
+    "nwb": "^0.23.0",
+    "prettier": "^1.14.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   },
   "authors": [
+    "Vitali Zaidman <vzaidman@gmail.com> (https://github.com/vzaidman)",
     "Michael Schneider <mischneider1@gmail.com> (https://github.com/maicki)",
     "Gabe Scholz <github@gabe.pizza> (https://github.com/garbles)"
   ],
