@@ -120,4 +120,22 @@ describe(`whyDidYouUpdate`, () => {
     ])
     */
   })
+
+  it(`get snapshot on componentDidUpdate`, () => {
+    let resolve = false
+    class Stub extends React.Component {
+      getSnapshotBeforeUpdate() {
+        return true
+      }
+      componentDidUpdate(prevProps, prevState, snapshot) {
+        resolve = snapshot
+      }
+      render () {
+        return <noscript />
+      }
+    }
+    render(<Stub />, node)
+    render(<Stub a />, node)
+    equal(resolve, true)
+  })
 })
