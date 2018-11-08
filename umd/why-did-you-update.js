@@ -2913,10 +2913,10 @@ var src_createClassComponent = function createClassComponent(ctor, opts) {
       return _possibleConstructorReturn(this, _ctor.apply(this, arguments));
     }
 
-    WDYUClassComponent.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState) {
+    WDYUClassComponent.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState, snapshot) {
       cdu.call(this, prevProps, prevState);
       if (typeof ctor.prototype.componentDidUpdate === 'function') {
-        ctor.prototype.componentDidUpdate.call(this, prevProps, prevState);
+        ctor.prototype.componentDidUpdate.call(this, prevProps, prevState, snapshot);
       }
     };
 
@@ -2947,8 +2947,8 @@ var src_createFunctionalComponent = function createFunctionalComponent(ctor, opt
       return ctor(this.props);
     };
 
-    WDYUFunctionalComponent.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState) {
-      cdu.call(this, prevProps, prevState);
+    WDYUFunctionalComponent.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState, snapshot) {
+      cdu.call(this, prevProps, prevState, snapshot);
     };
 
     return WDYUFunctionalComponent;

@@ -47,10 +47,10 @@ const createClassComponent = (ctor, opts) => {
   // If the component had its own `componentDidUpdate`,
   // we call it afterwards.`
   let WDYUClassComponent = class extends ctor {
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
       cdu.call(this, prevProps, prevState);
       if (typeof ctor.prototype.componentDidUpdate === 'function') {
-        ctor.prototype.componentDidUpdate.call(this, prevProps, prevState);
+        ctor.prototype.componentDidUpdate.call(this, prevProps, prevState, snapshot);
       }
     }
   }
@@ -70,8 +70,8 @@ const createFunctionalComponent = (ctor, opts, ReactComponent) => {
     render() {
       return ctor(this.props);
     }
-    componentDidUpdate(prevProps, prevState) {
-      cdu.call(this, prevProps, prevState);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+      cdu.call(this, prevProps, prevState, snapshot);
     }
   }
   // our wrapper component needs an explicit display name
