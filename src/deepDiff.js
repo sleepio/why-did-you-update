@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import isEqual from 'react-fast-compare'
 
 export const DIFF_TYPES = {
   UNAVOIDABLE: 'unavoidable',
@@ -17,7 +18,7 @@ export const classifyDiff = (prev, next, name) => {
     }
   }
 
-  if (_.isEqual(prev, next)) {
+  if (isEqual(prev, next)) {
     return {
       type: DIFF_TYPES.EQUAL,
       name,
