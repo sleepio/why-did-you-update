@@ -18,7 +18,8 @@
     "release:patch": "nwb build && npm version patch && npm publish"
   },
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "react-fast-compare": "^2.0.3"
   },
   "peerDependencies": {
     "react": ">=16"
