@@ -18,7 +18,7 @@ const memoized = (map, key, fn) => {
 
 function createComponentDidUpdate (opts) {
   return function componentDidUpdate (prevProps, prevState) {
-    const displayName = getDisplayName(this.constructor); 
+    const displayName = getDisplayName(this.constructor);
 
     if (!shouldInclude(displayName, opts)) {
       return
@@ -41,8 +41,8 @@ function createComponentDidUpdate (opts) {
 const createClassComponent = (ctor, opts) => {
   let cdu = createComponentDidUpdate(opts);
 
-  // the wrapper class extends the original class, 
-  // and overwrites its `componentDidUpdate` method, 
+  // the wrapper class extends the original class,
+  // and overwrites its `componentDidUpdate` method,
   // to allow why-did-you-update to listen for updates.
   // If the component had its own `componentDidUpdate`,
   // we call it afterwards.`
@@ -68,15 +68,21 @@ const createFunctionalComponent = (ctor, opts, ReactComponent) => {
   // and implement `componentDidUpdate` for `why-did-you-update`
   let WDYUFunctionalComponent = class extends ReactComponent {
     render() {
-      return ctor(this.props);
+      return ctor(this.props, this.context);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
       cdu.call(this, prevProps, prevState, snapshot);
     }
   }
-  // our wrapper component needs an explicit display name
-  // based on the original constructor.
-  WDYUFunctionalComponent.displayName = getDisplayName(ctor);
+
+  // copy all statics from the functional component to the class
+  // to support proptypes and context apis
+  Object.assign(WDYUFunctionalComponent, ctor, {
+    // our wrapper component needs an explicit display name
+    // based on the original constructor.
+    displayName: getDisplayName(ctor)
+  })
+
   return WDYUFunctionalComponent;
 }
 
@@ -85,16 +91,16 @@ export const whyDidYouUpdate = (React, opts = {}) => {
 
   // Store the original `React.createElement`,
   // which we're going to reference in our own implementation
-  // and which we put back when we remove `whyDidYouUpdate` from React. 
+  // and which we put back when we remove `whyDidYouUpdate` from React.
   let _createReactElement = React.createElement;
 
-  // The memoizer is a JavaScript map that allows us to return 
+  // The memoizer is a JavaScript map that allows us to return
   // the same WrappedComponent for the same original constructor.
   // This ensure that by wrapping the constructor, we don't break
   // React's reconciliation process.
   const memo = new Map();
 
-  // Our new implementation of `React.createElement` works by 
+  // Our new implementation of `React.createElement` works by
   // replacing the element constructor with a class that wraps it.
   React.createElement = function(type, ...rest) {
     let ctor = type;
@@ -106,13 +112,13 @@ export const whyDidYouUpdate = (React, opts = {}) => {
         // we're dealing with a class component
         ctor = memoized(memo, ctor, () => createClassComponent(ctor, opts));
       } else {
-        // If the constructor function has no `render`, 
+        // If the constructor function has no `render`,
         // it must be a simple functioanl component.
         ctor = memoized(memo, ctor, () => createFunctionalComponent(ctor, opts, React.Component));
       }
     }
 
-    // Call the old `React.createElement, 
+    // Call the old `React.createElement,
     // but with our overwritten constructor
     return _createReactElement.apply(React, [ctor, ...rest]);
   };
