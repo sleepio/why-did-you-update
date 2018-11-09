@@ -1,6 +1,7 @@
 import {deepEqual, equal, ok} from 'assert'
 import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
+import PropTypes from 'prop-types'
 
 import whyDidYouUpdate from 'src/'
 
@@ -137,5 +138,81 @@ describe(`whyDidYouUpdate`, () => {
     render(<Stub />, node)
     render(<Stub a />, node)
     equal(resolve, true)
+  })
+
+  it(`handle context`, () => {
+    const MyContext = React.createContext()
+
+    let resultContext
+
+    class ClassComponent extends React.Component {
+      static contextType = MyContext
+      render() {
+        resultContext = this.context
+        return (
+          <div>{resultContext}</div>
+        )
+      }
+    }
+
+    const FatherComponent = () => (
+      <div><ClassComponent/></div>
+    )
+
+    class Main extends React.Component {
+      render() {
+        return (
+          <MyContext.Provider value='contextValue'>
+            <ClassComponent/>
+          </MyContext.Provider>
+        );
+      }
+    }
+
+    render(<Main />, node)
+
+    equal(resultContext, 'contextValue')
+  })
+
+  it(`handle context old api`, () => {
+    const context = {
+      contextKey: 'contextValue'
+    }
+
+    let resultContext
+    const FunctionalComponent = (props, context) => {
+      resultContext = context
+      return (
+        <div>hi</div>
+      )
+    }
+
+    FunctionalComponent.contextTypes = {
+      contextKey: PropTypes.string.isRequired
+    }
+
+    const FatherComponent = () => (
+      <div><FunctionalComponent/></div>
+    )
+
+    class Main extends React.Component {
+      static childContextTypes = {
+        contextKey: PropTypes.string.isRequired,
+      };
+
+      getChildContext() {
+        return context;
+      }
+
+      render() {
+        return (
+          <FatherComponent/>
+        );
+      }
+    }
+
+    render(<Main />, node)
+
+    deepEqual(resultContext, context)
   })
 })
