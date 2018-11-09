@@ -6,6 +6,7 @@ import _union from 'lodash/union';
 import _isFunction from 'lodash/isFunction';
 import _isEqual from 'lodash/isEqual';
 
+import isEqual from 'react-fast-compare';
 
 export var DIFF_TYPES = {
   UNAVOIDABLE: 'unavoidable',
@@ -24,7 +25,7 @@ export var classifyDiff = function classifyDiff(prev, next, name) {
     };
   }
 
-  if (_isEqual(prev, next)) {
+  if (isEqual(prev, next)) {
     return {
       type: DIFF_TYPES.EQUAL,
       name: name,
