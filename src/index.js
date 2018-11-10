@@ -20,10 +20,6 @@ function createComponentDidUpdate (opts) {
   return function componentDidUpdate (prevProps, prevState) {
     const displayName = getDisplayName(this.constructor);
 
-    if (!shouldInclude(displayName, opts)) {
-      return
-    }
-
     const propsDiff = classifyDiff(prevProps, this.props, `${displayName}.props`)
     if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
       return
