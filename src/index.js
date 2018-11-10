@@ -16,10 +16,8 @@ const memoized = (map, key, fn) => {
   return ret;
 }
 
-function createComponentDidUpdate (opts) {
+function createComponentDidUpdate (displayName, opts) {
   return function componentDidUpdate (prevProps, prevState) {
-    const displayName = getDisplayName(this.constructor);
-
     const propsDiff = classifyDiff(prevProps, this.props, `${displayName}.props`)
     if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
       return
@@ -34,8 +32,8 @@ function createComponentDidUpdate (opts) {
 }
 
 // Creates a wrapper for a React class component
-const createClassComponent = (ctor, opts) => {
-  let cdu = createComponentDidUpdate(opts);
+const createClassComponent = (ctor, displayName, opts) => {
+  let cdu = createComponentDidUpdate(displayName, opts);
 
   // the wrapper class extends the original class,
   // and overwrites its `componentDidUpdate` method,
@@ -52,13 +50,13 @@ const createClassComponent = (ctor, opts) => {
   }
   // our wrapper component needs an explicit display name
   // based on the original constructor.
-  WDYUClassComponent.displayName = getDisplayName(ctor);
+  WDYUClassComponent.displayName = displayName
   return WDYUClassComponent;
 }
 
 // Creates a wrapper for a React functional component
-const createFunctionalComponent = (ctor, opts, ReactComponent) => {
-  let cdu = createComponentDidUpdate(opts);
+const createFunctionalComponent = (ctor, displayName, opts, ReactComponent) => {
+  let cdu = createComponentDidUpdate(displayName, opts);
 
   // We call the original function in the render() method,
   // and implement `componentDidUpdate` for `why-did-you-update`
@@ -76,7 +74,7 @@ const createFunctionalComponent = (ctor, opts, ReactComponent) => {
   Object.assign(WDYUFunctionalComponent, ctor, {
     // our wrapper component needs an explicit display name
     // based on the original constructor.
-    displayName: getDisplayName(ctor)
+    displayName
   })
 
   return WDYUFunctionalComponent;
@@ -101,16 +99,17 @@ export const whyDidYouUpdate = (React, opts = {}) => {
   React.createElement = function(type, ...rest) {
     let ctor = type;
 
+    const displayName = getDisplayName(ctor)
     // the element is a class component or a functional component
-    if (typeof ctor === 'function' && shouldInclude(getDisplayName(ctor), opts)) {
+    if (typeof ctor === 'function' && shouldInclude(displayName, opts)) {
       if (ctor.prototype && typeof ctor.prototype.render === 'function') {
          // If the constructor has a `render` method in its prototype,
         // we're dealing with a class component
-        ctor = memoized(memo, ctor, () => createClassComponent(ctor, opts));
+        ctor = memoized(memo, ctor, () => createClassComponent(ctor, displayName, opts));
       } else {
         // If the constructor function has no `render`,
         // it must be a simple functioanl component.
-        ctor = memoized(memo, ctor, () => createFunctionalComponent(ctor, opts, React.Component));
+        ctor = memoized(memo, ctor, () => createFunctionalComponent(ctor, displayName, opts, React.Component));
       }
     }
 
