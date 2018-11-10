@@ -1,5 +1,5 @@
 /*!
- * why-did-you-update v1.0.5
+ * why-did-you-update v1.0.6
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -2981,14 +2981,8 @@ var memoized = function memoized(map, key, fn) {
   return ret;
 };
 
-function createComponentDidUpdate(opts) {
+function createComponentDidUpdate(displayName, opts) {
   return function componentDidUpdate(prevProps, prevState) {
-    var displayName = getDisplayName(this.constructor);
-
-    if (!shouldInclude_shouldInclude(displayName, opts)) {
-      return;
-    }
-
     var propsDiff = deepDiff_classifyDiff(prevProps, this.props, displayName + '.props');
     if (propsDiff.type === DIFF_TYPES.UNAVOIDABLE) {
       return;
@@ -3003,8 +2997,8 @@ function createComponentDidUpdate(opts) {
 }
 
 // Creates a wrapper for a React class component
-var src_createClassComponent = function createClassComponent(ctor, opts) {
-  var cdu = createComponentDidUpdate(opts);
+var createClassComponent = function createClassComponent(ctor, displayName, opts) {
+  var cdu = createComponentDidUpdate(displayName, opts);
 
   // the wrapper class extends the original class,
   // and overwrites its `componentDidUpdate` method,
@@ -3031,13 +3025,13 @@ var src_createClassComponent = function createClassComponent(ctor, opts) {
   }(ctor);
   // our wrapper component needs an explicit display name
   // based on the original constructor.
-  WDYUClassComponent.displayName = getDisplayName(ctor);
+  WDYUClassComponent.displayName = displayName;
   return WDYUClassComponent;
 };
 
 // Creates a wrapper for a React functional component
-var src_createFunctionalComponent = function createFunctionalComponent(ctor, opts, ReactComponent) {
-  var cdu = createComponentDidUpdate(opts);
+var createFunctionalComponent = function createFunctionalComponent(ctor, displayName, opts, ReactComponent) {
+  var cdu = createComponentDidUpdate(displayName, opts);
 
   // We call the original function in the render() method,
   // and implement `componentDidUpdate` for `why-did-you-update`
@@ -3066,7 +3060,7 @@ var src_createFunctionalComponent = function createFunctionalComponent(ctor, opt
   Object.assign(WDYUFunctionalComponent, ctor, {
     // our wrapper component needs an explicit display name
     // based on the original constructor.
-    displayName: getDisplayName(ctor)
+    displayName: displayName
   });
 
   return WDYUFunctionalComponent;
@@ -3093,19 +3087,20 @@ var src_whyDidYouUpdate = function whyDidYouUpdate(React) {
   React.createElement = function (type) {
     var ctor = type;
 
+    var displayName = getDisplayName(ctor);
     // the element is a class component or a functional component
-    if (typeof ctor === 'function') {
+    if (typeof ctor === 'function' && shouldInclude_shouldInclude(displayName, opts)) {
       if (ctor.prototype && typeof ctor.prototype.render === 'function') {
         // If the constructor has a `render` method in its prototype,
         // we're dealing with a class component
         ctor = memoized(memo, ctor, function () {
-          return src_createClassComponent(ctor, opts);
+          return createClassComponent(ctor, displayName, opts);
         });
       } else {
         // If the constructor function has no `render`,
         // it must be a simple functioanl component.
         ctor = memoized(memo, ctor, function () {
-          return src_createFunctionalComponent(ctor, opts, React.Component);
+          return createFunctionalComponent(ctor, displayName, opts, React.Component);
         });
       }
     }
