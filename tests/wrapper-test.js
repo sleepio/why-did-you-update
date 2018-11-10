@@ -182,6 +182,58 @@ describe(`whyDidYouUpdate wrapper`, () => {
     equal(groupStore.entries[0][0], `Stub`)
   })
 
+  it(`skip wrapping certain names using a regexp`, () => {
+    whyDidYouUpdate(React, {exclude: /Stub/})
+
+    class Foo extends React.Component {
+      render () {
+        return <noscript />
+      }
+    }
+
+    equal(React.createElement(Stub).type.name, 'Stub')
+    equal(React.createElement(Foo).type.name, 'WDYUClassComponent')
+  })
+
+  it(`skip wrapping certain names using a string`, () => {
+    whyDidYouUpdate(React, {exclude: 'Stub'})
+
+    class Foo extends React.Component {
+      render () {
+        return <noscript />
+      }
+    }
+
+    equal(React.createElement(Stub).type.name, 'Stub')
+    equal(React.createElement(Foo).type.name, 'WDYUClassComponent')
+  })
+
+  it(`only wrap certain names using a regexp`, () => {
+    whyDidYouUpdate(React, {include: /Stub/})
+
+    class Foo extends React.Component {
+      render () {
+        return <noscript />
+      }
+    }
+
+    equal(React.createElement(Stub).type.name, 'WDYUClassComponent')
+    equal(React.createElement(Foo).type.name, 'Foo')
+  })
+
+  it(`only wrap certain names using a string`, () => {
+    whyDidYouUpdate(React, {include: 'Stub'})
+
+    class Foo extends React.Component {
+      render () {
+        return <noscript />
+      }
+    }
+
+    equal(React.createElement(Stub).type.name, 'WDYUClassComponent')
+    equal(React.createElement(Foo).type.name, 'Foo')
+  })
+
   it(`still calls the original componentDidUpdate for class component`, done => {
     whyDidYouUpdate(React)
 

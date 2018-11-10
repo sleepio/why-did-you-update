@@ -106,7 +106,7 @@ export const whyDidYouUpdate = (React, opts = {}) => {
     let ctor = type;
 
     // the element is a class component or a functional component
-    if (typeof ctor === 'function') {
+    if (typeof ctor === 'function' && shouldInclude(getDisplayName(ctor), opts)) {
       if (ctor.prototype && typeof ctor.prototype.render === 'function') {
          // If the constructor has a `render` method in its prototype,
         // we're dealing with a class component
