@@ -21,7 +21,11 @@
     "react"
   ],
   "rules": {
-    "prettier/prettier": ["error", {"trailingComma": "es5", "singleQuote": true}],
+    "prettier/prettier": ["error", {
+      "trailingComma": "es5",
+      "singleQuote": true,
+      "printWidth": 200
+    }],
     "no-await-in-loop": 0,
     "no-return-await": 0,
     "react/jsx-filename-extension": 0,
@@ -35,6 +39,7 @@
     "import/no-named-as-default": 0,
     "import/no-named-as-default-member": 0,
     "import/no-unresolved": 0,
-    "import/no-webpack-loader-syntax": 0
+    "import/no-webpack-loader-syntax": 0,
+    "max-len": "off"
   }
 }
