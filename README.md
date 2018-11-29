@@ -13,13 +13,13 @@ This library is available on npm, install it with: `npm install --save why-did-y
 ### Sandbox
 You can test the library [>> HERE <<](https://codesandbox.io/s/mywnl5xp58?expanddevtools=1) (notice the console).
 
-### Version 1 Update With Braking Changes
+### Version 1 Update With Breaking Changes
 
 Check out the [releases](https://github.com/maicki/why-did-you-update/releases) page.
 
 We now only support React 16+
 
-To work with older versions of react, install older version of this library:
+To work with older versions of react, install an older version of this library:
 
 `npm install --save why-did-you-update@0.1.1` or `yarn add why-did-you-update@0.1.1`
 
@@ -56,7 +56,7 @@ whyDidYouUpdate(React, { groupByComponent: true, collapseComponentGroups: false 
 ```
 
 ##### notifier
-A notifier can be provided if the official one does not suite your needs.
+A notifier can be provided if the official one does not suit your needs.
 
 ```js
 const notifier = (groupByComponent, collapseComponentGroups, displayName, diffs) => {
@@ -144,7 +144,7 @@ render(){
 
 ### Credit
 
-I originally read about how Benchling created a mixin to do this on a per component basis ([A deep dive into React perf debugging](http://benchling.engineering/deep-dive-react-perf-debugging/)).
+I originally read about how Benchling created a mixin to do this on a per-component basis ([A deep dive into React perf debugging](http://benchling.engineering/deep-dive-react-perf-debugging/)).
 That is really awesome but also tedious AF, so why not just monkey patch React.
 
 ### License
