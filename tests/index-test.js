@@ -79,11 +79,13 @@ describe(`whyDidYouUpdate`, () => {
     ])
 
     deepEqual(logStore.entries, [
-      ['Before:', {a: 1}],
-      ['After:', {a: 1}],
+      ['onRenderEnd: Stub'],
+      ['onRenderEnd: Stub'],
+      ['Before:', { a: 1 }],
+      ['After:', { a: 1 }],
       ['Value:', null]
-    ])
-  })
+    ]);
+  });
 
   it(`does not log a warning on unavoidable re-render with same nested props`, () => {
     render(<Stub a={{b: 1, c: {d: 1}}} />, node)
@@ -106,10 +108,12 @@ describe(`whyDidYouUpdate`, () => {
       ['Stub.state: Value is the same (equal by reference). Avoidable re-render!']
     ])
 
-    equal(groupStore.entries.length, 1)
-    equal(groupStore.entries[0][0], `Stub`)
-    equal(logStore.entries[0][0], 'Functions before:')
-    equal(logStore.entries[1][0], 'Functions after:')
+    equal(groupStore.entries.length, 1);
+    equal(groupStore.entries[0][0], `Stub`);
+    equal(logStore.entries[0][0], 'onRenderEnd: Stub');
+    equal(logStore.entries[1][0], 'onRenderEnd: Stub');
+    equal(logStore.entries[2][0], 'Functions before:');
+    equal(logStore.entries[3][0], 'Functions after:');
 
     /*
     I'd like to use deepEqual to check all log entries at once,
