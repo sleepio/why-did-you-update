@@ -42,7 +42,8 @@ var createClassComponent = function createClassComponent(ctor, displayName, opts
   var cdu = createComponentDidUpdate(displayName, opts);
 
   // the wrapper class extends the original class,
-  // and overwrites its `componentDidUpdate` method,
+  // and overwrites its `componentDidUpdate` and
+  // `render` methods,
   // to allow why-did-you-update to listen for updates.
   // If the component had its own `componentDidUpdate`,
   // we call it afterwards.`
@@ -60,6 +61,14 @@ var createClassComponent = function createClassComponent(ctor, displayName, opts
       if (typeof ctor.prototype.componentDidUpdate === 'function') {
         ctor.prototype.componentDidUpdate.call(this, prevProps, prevState, snapshot);
       }
+    };
+
+    WDYUClassComponent.prototype.render = function render() {
+      var start = Date.now();
+      opts.onRenderStart(displayName, start);
+      var rendered = ctor.prototype.render.call(this);
+      opts.onRenderEnd(displayName, Date.now() - start);
+      return rendered;
     };
 
     return WDYUClassComponent;
@@ -156,6 +165,7 @@ export var whyDidYouUpdate = function whyDidYouUpdate(React) {
     return _createReactElement.apply(React, [ctor].concat(rest));
   };
 
+  // Reverse the monkey-patch
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = function () {
     React.createElement = _createReactElement;
     delete React.__WHY_DID_YOU_UPDATE_RESTORE_FN__;

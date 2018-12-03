@@ -944,7 +944,7 @@ module.exports = isEqual;
 var isArray = Array.isArray;
 var keyList = Object.keys;
 var hasProp = Object.prototype.hasOwnProperty;
-var inBrowser = typeof window === 'object';
+var hasElementType = typeof Element !== 'undefined';
 
 function equal(a, b) {
   // fast-deep-equal index.js 2.0.1
@@ -989,7 +989,7 @@ function equal(a, b) {
 
     // start react-fast-compare
     // custom handling for DOM elements
-    if (inBrowser && a instanceof Element && b instanceof Element)
+    if (hasElementType && a instanceof Element && b instanceof Element)
       return a === b;
 
     // custom handling for React
@@ -1020,8 +1020,7 @@ module.exports = function exportedEqual(a, b) {
   try {
     return equal(a, b);
   } catch (error) {
-    if ((error.message && error.message.match(/stack|recursion/i)) || (error.number === -2146828260))
-    {
+    if ((error.message && error.message.match(/stack|recursion/i)) || (error.number === -2146828260)) {
       // warn on circular references, don't crash
       // browsers give this different errors name and messages:
       // chrome/safari: "RangeError", "Maximum call stack size exceeded"
@@ -2915,6 +2914,19 @@ var toArray = function toArray(o) {
   return o ? [].concat(o) : [];
 };
 
+var addressStack = [];
+var defaultOnRenderStart = function defaultOnRenderStart(displayName) {
+  addressStack.push(displayName);
+  console.log();
+};
+var defaultOnRenderEnd = function defaultOnRenderEnd(displayName, diff) {
+  if (addressStack[addressStack.length - 1] !== displayName) {
+    throw new Error('expecting ' + displayName + ' as top-most on addressStack, instead got ' + addressStack[addressStack.length - 1]);
+  }
+  console.log(addressStack.join('-') + ' ' + diff + 'ms');
+  addressStack.pop(displayName);
+};
+
 var normalizeOptions_normalizeOptions = function normalizeOptions() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var _opts$include = opts.include,
@@ -2926,7 +2938,11 @@ var normalizeOptions_normalizeOptions = function normalizeOptions() {
       _opts$collapseCompone = opts.collapseComponentGroups,
       collapseComponentGroups = _opts$collapseCompone === undefined ? true : _opts$collapseCompone,
       _opts$notifier = opts.notifier,
-      notifier = _opts$notifier === undefined ? defaultNotifier : _opts$notifier;
+      notifier = _opts$notifier === undefined ? defaultNotifier : _opts$notifier,
+      _opts$onRenderStart = opts.onRenderStart,
+      onRenderStart = _opts$onRenderStart === undefined ? defaultOnRenderStart : _opts$onRenderStart,
+      _opts$onRenderEnd = opts.onRenderEnd,
+      onRenderEnd = _opts$onRenderEnd === undefined ? defaultOnRenderEnd : _opts$onRenderEnd;
 
 
   return {
@@ -2934,7 +2950,9 @@ var normalizeOptions_normalizeOptions = function normalizeOptions() {
     include: toArray(include).map(normalizeOptions_toRegExp),
     exclude: toArray(exclude).map(normalizeOptions_toRegExp),
     groupByComponent: groupByComponent,
-    collapseComponentGroups: collapseComponentGroups
+    collapseComponentGroups: collapseComponentGroups,
+    onRenderStart: onRenderStart,
+    onRenderEnd: onRenderEnd
   };
 };
 // EXTERNAL MODULE: ./node_modules/lodash/some.js
@@ -3001,7 +3019,8 @@ var createClassComponent = function createClassComponent(ctor, displayName, opts
   var cdu = createComponentDidUpdate(displayName, opts);
 
   // the wrapper class extends the original class,
-  // and overwrites its `componentDidUpdate` method,
+  // and overwrites its `componentDidUpdate` and
+  // `render` methods,
   // to allow why-did-you-update to listen for updates.
   // If the component had its own `componentDidUpdate`,
   // we call it afterwards.`
@@ -3019,6 +3038,14 @@ var createClassComponent = function createClassComponent(ctor, displayName, opts
       if (typeof ctor.prototype.componentDidUpdate === 'function') {
         ctor.prototype.componentDidUpdate.call(this, prevProps, prevState, snapshot);
       }
+    };
+
+    WDYUClassComponent.prototype.render = function render() {
+      var start = Date.now();
+      opts.onRenderStart(displayName, start);
+      var rendered = ctor.prototype.render.call(this);
+      opts.onRenderEnd(displayName, Date.now() - start);
+      return rendered;
     };
 
     return WDYUClassComponent;
@@ -3115,6 +3142,7 @@ var src_whyDidYouUpdate = function whyDidYouUpdate(React) {
     return _createReactElement.apply(React, [ctor].concat(rest));
   };
 
+  // Reverse the monkey-patch
   React.__WHY_DID_YOU_UPDATE_RESTORE_FN__ = function () {
     React.createElement = _createReactElement;
     delete React.__WHY_DID_YOU_UPDATE_RESTORE_FN__;
