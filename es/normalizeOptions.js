@@ -16,7 +16,6 @@ var toArray = function toArray(o) {
 var addressStack = [];
 var defaultOnRenderStart = function defaultOnRenderStart(displayName) {
   addressStack.push(displayName);
-  console.log();
 };
 var defaultOnRenderEnd = function defaultOnRenderEnd(displayName, diff) {
   if (addressStack[addressStack.length - 1] !== displayName) {
